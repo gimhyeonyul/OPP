@@ -16,7 +16,9 @@ package library;
  *   실물책은 14일, 전자책은 7일처럼 대출 기간이 다름.
  *   그 차이를 각 서브클래스에게 맡기고, Book에는 공통 로직만 남김.
  */
-public abstract class Book {
+// implements Searchable: "Book은 검색될 수 있다"는 계약을 맺음
+// extends와 동시에 사용 가능 → 상속(is-a) + 인터페이스(can-do) 동시 표현
+public abstract class Book implements Searchable {
 
     // private: 이 클래스 안에서만 접근 가능. 외부에서 book.bookId = 999; 이런 거 불가능.
     private final int bookId;       // 고유 ID (한번 정해지면 바뀌면 안 되니까 final)
@@ -58,6 +60,14 @@ public abstract class Book {
     // 지금은 단순하게 setter를 열어둠. 심화 단계에서 접근 제어를 더 조일 수 있음.
     public void setAvailable(boolean available) {
         this.isAvailable = available;
+    }
+
+    // [Searchable 인터페이스 구현] 제목 또는 저자에 keyword가 포함되면 true
+    // Book에 구현해두면 PhysicalBook, EBook이 따로 구현 안 해도 됨 (상속으로 물려받음)
+    // 기존 searchByTitle은 제목만 검색했지만, 이제 저자 이름으로도 검색 가능
+    @Override
+    public boolean matchesKeyword(String keyword) {
+        return title.contains(keyword) || author.contains(keyword);
     }
 
     // [추상 메서드] 최대 대출 가능 일수

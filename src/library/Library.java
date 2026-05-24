@@ -59,15 +59,30 @@ public class Library {
         }
     }
 
-    // 제목으로 책 검색 (부분 일치)
-    public Book searchByTitle(String keyword) {
+    // 책 검색 (제목 + 저자 동시 검색, 결과 여러 개 반환)
+    // 기존 searchByTitle은 제목만, 첫 번째 결과만 반환했음
+    // Searchable 인터페이스 덕분에 book.matchesKeyword()로 통일해서 호출 가능
+    // → 나중에 검색 조건이 바뀌어도 Library는 수정 없이 Book쪽만 수정하면 됨
+    public List<Book> search(String keyword) {
+        List<Book> results = new ArrayList<>();
         for (Book book : books) {
-            // contains: 문자열이 keyword를 포함하는지 확인
-            if (book.getTitle().contains(keyword)) {
-                return book; // 첫 번째로 찾은 책 반환
+            if (book.matchesKeyword(keyword)) {
+                results.add(book);
             }
         }
-        return null; // 못 찾으면 null 반환
+        return results;
+    }
+
+    // 회원 검색 (이름으로 검색)
+    // Book과 Member 둘 다 Searchable을 구현했으므로 같은 방식으로 검색 가능
+    public List<Member> searchMember(String keyword) {
+        List<Member> results = new ArrayList<>();
+        for (Member member : members) {
+            if (member.matchesKeyword(keyword)) {
+                results.add(member);
+            }
+        }
+        return results;
     }
 
     // =========================================================

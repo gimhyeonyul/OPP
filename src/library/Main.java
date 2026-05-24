@@ -1,5 +1,6 @@
 package library;
 
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -49,13 +50,17 @@ public class Main {
                     break;
 
                 case 2:
-                    System.out.print("검색할 제목 키워드: ");
+                    // search()는 이제 List<Book>을 반환 → 여러 결과 출력 가능
+                    System.out.print("검색할 키워드 (제목 또는 저자): ");
                     String keyword = scanner.nextLine();
-                    Book result = library.searchByTitle(keyword);
-                    if (result != null) {
-                        System.out.println("검색 결과: " + result);
-                    } else {
+                    List<Book> results = library.search(keyword);
+                    if (results.isEmpty()) {
                         System.out.println("검색 결과가 없습니다.");
+                    } else {
+                        System.out.println("검색 결과 " + results.size() + "건:");
+                        for (Book b : results) {
+                            System.out.println("  " + b);
+                        }
                     }
                     break;
 

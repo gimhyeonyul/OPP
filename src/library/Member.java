@@ -13,7 +13,10 @@ import java.util.List;
  * → "이 회원이 무슨 책을 빌렸지?" 라는 질문에 바로 대답하려면
  *   Member 객체 안에 그 정보가 있어야 빠름.
  */
-public class Member {
+// implements Searchable: Member도 이름으로 검색될 수 있음
+// Book과 Member는 상속 관계가 전혀 없지만, 같은 인터페이스를 구현할 수 있음
+// → 인터페이스의 핵심: 관계없는 클래스들에게 같은 "능력"을 부여
+public class Member implements Searchable {
 
     private final int memberId;
     private final String name;
@@ -41,6 +44,12 @@ public class Member {
     // 대출 목록 반환: 외부에서 목록을 읽을 수 있게 함
     public List<Book> getBorrowedBooks() {
         return borrowedBooks;
+    }
+
+    // [Searchable 인터페이스 구현] 회원 이름에 keyword가 포함되면 true
+    @Override
+    public boolean matchesKeyword(String keyword) {
+        return name.contains(keyword);
     }
 
     // --- 대출/반납 관련 메서드 ---
