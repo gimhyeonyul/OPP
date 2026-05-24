@@ -18,10 +18,11 @@ public class Main {
         Library library = new Library(); // 도서관 객체 생성
         Scanner scanner = new Scanner(System.in); // 키보드 입력을 읽는 도구
 
-        // 테스트용 초기 데이터 (직접 추가해보고 싶으면 이 부분 지워도 됨)
-        library.addBook("자바의 정석", "남궁성");
-        library.addBook("객체지향의 사실과 오해", "조영호");
-        library.addBook("클린 코드", "로버트 마틴");
+        // 테스트용 초기 데이터 - 실물책과 전자책을 섞어서 등록
+        // [다형성 확인 포인트] showAllBooks()로 출력하면 각 타입에 맞는 toString()이 호출됨
+        library.addBook("자바의 정석", "남궁성");                         // 실물책 - 14일
+        library.addBook("객체지향의 사실과 오해", "조영호");              // 실물책 - 14일
+        library.addEBook("클린 코드", "로버트 마틴", "PDF");             // 전자책 - 7일
         library.addMember("김철수");
         library.addMember("이영희");
 
@@ -41,11 +42,13 @@ public class Main {
                 continue; // while 처음으로 돌아감
             }
 
-            // 선택에 따라 분기
+            // 선택에 따라 분기 (Java 11 호환 switch 문법)
             switch (choice) {
-                case 1 -> library.showAllBooks();
+                case 1:
+                    library.showAllBooks();
+                    break;
 
-                case 2 -> {
+                case 2:
                     System.out.print("검색할 제목 키워드: ");
                     String keyword = scanner.nextLine();
                     Book result = library.searchByTitle(keyword);
@@ -54,51 +57,60 @@ public class Main {
                     } else {
                         System.out.println("검색 결과가 없습니다.");
                     }
-                }
+                    break;
 
-                case 3 -> {
+                case 3:
+                    // [다형성 체험] 등록 시 타입을 선택 → Library 내부에서 알맞은 서브클래스 생성
+                    System.out.print("책 종류 선택 (1: 실물책 / 2: 전자책): ");
+                    int bookType = Integer.parseInt(scanner.nextLine().trim());
                     System.out.print("책 제목: ");
                     String title = scanner.nextLine();
                     System.out.print("저자: ");
                     String author = scanner.nextLine();
-                    library.addBook(title, author);
-                }
+                    if (bookType == 2) {
+                        System.out.print("파일 형식 (PDF / EPUB 등): ");
+                        String fmt = scanner.nextLine();
+                        library.addEBook(title, author, fmt);
+                    } else {
+                        library.addBook(title, author);
+                    }
+                    break;
 
-                case 4 -> {
+                case 4:
                     System.out.print("회원 이름: ");
                     String name = scanner.nextLine();
                     library.addMember(name);
-                }
+                    break;
 
-                case 5 -> {
+                case 5:
                     System.out.print("대출할 책 ID: ");
                     int bookId = Integer.parseInt(scanner.nextLine().trim());
                     System.out.print("회원 ID: ");
                     int memberId = Integer.parseInt(scanner.nextLine().trim());
                     library.borrowBook(bookId, memberId);
-                }
+                    break;
 
-                case 6 -> {
+                case 6:
                     System.out.print("반납할 책 ID: ");
-                    int bookId = Integer.parseInt(scanner.nextLine().trim());
+                    int bookId2 = Integer.parseInt(scanner.nextLine().trim());
                     System.out.print("회원 ID: ");
-                    int memberId = Integer.parseInt(scanner.nextLine().trim());
-                    library.returnBook(bookId, memberId);
-                }
+                    int memberId2 = Integer.parseInt(scanner.nextLine().trim());
+                    library.returnBook(bookId2, memberId2);
+                    break;
 
-                case 7 -> {
+                case 7:
                     System.out.print("대출 목록을 볼 회원 ID: ");
-                    int memberId = Integer.parseInt(scanner.nextLine().trim());
-                    library.showBorrowedBooks(memberId);
-                }
+                    int memberId3 = Integer.parseInt(scanner.nextLine().trim());
+                    library.showBorrowedBooks(memberId3);
+                    break;
 
-                case 0 -> {
+                case 0:
                     System.out.println("프로그램을 종료합니다.");
                     scanner.close();
                     return; // main 메서드 종료 = 프로그램 종료
-                }
 
-                default -> System.out.println("잘못된 선택입니다. 다시 입력해주세요.");
+                default:
+                    System.out.println("잘못된 선택입니다. 다시 입력해주세요.");
             }
         }
     }
@@ -108,7 +120,7 @@ public class Main {
         System.out.println("\n--- 메뉴 ---");
         System.out.println("1. 전체 도서 목록");
         System.out.println("2. 책 검색");
-        System.out.println("3. 책 등록");
+        System.out.println("3. 책 등록 (실물책/전자책)");
         System.out.println("4. 회원 등록");
         System.out.println("5. 대출");
         System.out.println("6. 반납");

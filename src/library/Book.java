@@ -1,16 +1,22 @@
 package library;
 
 /**
- * [OOP 개념: 캡슐화(Encapsulation)]
+ * [OOP 개념: 상속(Inheritance) + 추상 클래스(Abstract Class)]
  *
- * 캡슐화란? 데이터(필드)를 외부에서 직접 건드리지 못하게 숨기고,
- * 허가된 방법(메서드)으로만 접근하게 만드는 것.
+ * 이전 단계: Book을 일반 클래스로 만들어 캡슐화를 배웠음.
+ * 이번 단계: Book을 추상 클래스로 바꿔 "공통 뼈대"만 정의하고,
+ *            실물책(PhysicalBook)과 전자책(EBook)이 각각 구체적인 내용을 채우게 함.
  *
- * 왜? 예를 들어 bookId를 외부에서 마음대로 바꿀 수 있으면
- * 같은 ID가 두 권에 생겨도 막을 방법이 없음.
- * private으로 막고 getter만 열면 "읽기는 되지만 수정은 안 됨"을 보장할 수 있음.
+ * abstract class란?
+ *   - 직접 객체를 만들 수 없음: new Book(...) 불가
+ *   - 공통 필드/메서드는 여기서 구현, 클래스마다 달라지는 것은 abstract로 선언만 해둠
+ *   - 자식 클래스가 반드시 abstract 메서드를 구현해야 컴파일 됨 (강제 계약)
+ *
+ * 왜 추상 클래스를 쓰나?
+ *   실물책은 14일, 전자책은 7일처럼 대출 기간이 다름.
+ *   그 차이를 각 서브클래스에게 맡기고, Book에는 공통 로직만 남김.
  */
-public class Book {
+public abstract class Book {
 
     // private: 이 클래스 안에서만 접근 가능. 외부에서 book.bookId = 999; 이런 거 불가능.
     private final int bookId;       // 고유 ID (한번 정해지면 바뀌면 안 되니까 final)
@@ -29,7 +35,8 @@ public class Book {
 
     // --- Getter: 외부에서 값을 읽을 수 있는 창구 ---
 
-    public int getBookId() {
+    public
+    int getBookId() {
         return bookId;
     }
 
@@ -52,6 +59,11 @@ public class Book {
     public void setAvailable(boolean available) {
         this.isAvailable = available;
     }
+
+    // [추상 메서드] 최대 대출 가능 일수
+    // abstract: 구현 없이 선언만 함 → 자식 클래스(PhysicalBook, EBook)가 반드시 구현해야 함
+    // 이게 없으면 컴파일 에러 발생 → "잊어버리는 실수"를 컴파일러가 잡아줌
+    public abstract int getMaxBorrowDays();
 
     // toString(): System.out.println(book) 했을 때 보여줄 문자열 정의
     // 안 만들면 "library.Book@1b6d3586" 같은 의미없는 주소값이 출력됨

@@ -32,12 +32,19 @@ public class Library {
     // 책 관련
     // =========================================================
 
-    // 책 등록
+    // 실물책 등록
+    // [다형성] List<Book>에 PhysicalBook을 넣어도 됨 - PhysicalBook은 Book이니까
     public void addBook(String title, String author) {
-        // ID는 Library가 직접 부여 → 중복 ID 걱정 없음
-        Book book = new Book(nextBookId++, title, author);
+        PhysicalBook book = new PhysicalBook(nextBookId++, title, author);
         books.add(book);
         System.out.println("책 등록 완료: " + book);
+    }
+
+    // 전자책 등록 - 파일 형식을 추가로 받음
+    public void addEBook(String title, String author, String fileFormat) {
+        EBook book = new EBook(nextBookId++, title, author, fileFormat);
+        books.add(book);
+        System.out.println("전자책 등록 완료: " + book);
     }
 
     // 전체 책 목록 출력
